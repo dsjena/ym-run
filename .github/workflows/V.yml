@@ -1,0 +1,51 @@
+name: V
+
+on:
+   repository_dispatch:
+       types: V
+
+jobs:
+   sj:
+       runs-on: ubuntu-latest
+       steps:
+           - name: Checkout V
+             uses: actions/checkout@v2
+             with:
+               path: main
+           - name: Setting V
+             run: |
+               cd ./main/
+               ls ${GITHUB_WORKSPACE}
+               echo ${GITHUB_WORKSPACE}
+               pwd
+               echo "main is done..."
+
+           - name: ym-v
+             uses: actions/checkout@v2
+             with:
+               repository: dsjena/ym-v
+               token: ${{ secrets.SUPER_SECRET }}
+               path: ym-v
+           - name: Setup
+             uses: actions/setup-python@v2
+             with:
+               python-version: '3.8'
+           - name: Install
+             run: |
+               cd ./ym-v/
+               python -m pip install --upgrade pip
+               pip install -r requirements.txt
+           - name: Compute V
+             run: |
+               cd ./ym-v/
+               dtt=`TZ=IST-5:30 date`
+               echo ${GITHUB_WORKSPACE}
+               echo "${dtt}" 
+               echo "${dtt}" >> recieved.md
+               bash make-rdme.sh >> log.txt 2>&1
+               sh all-run-group.sh 
+               git config --local user.email "action@github.com"
+               git config --local user.name "GitHub Action"
+               git add .
+               git diff-index --quiet HEAD || git commit -m "du" -a
+               git push
